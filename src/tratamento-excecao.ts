@@ -45,3 +45,45 @@ try {
 }
 console.log("Obrigado");
 
+class AnoNascimentoAbaixoDoMinimoError extends Error {
+    constructor(mesagem: string) {
+        super(mesagem);
+        this.name = "AnoNascimentoAbaixoDoMinimoError";
+    }
+}
+
+class AnoNascimentoAbaixoDoMaximoError extends Error {
+    constructor(ano_maximo: number) {
+        super(`Ano Nascimento inválido! Valor deve ser abaixo de ${ano_maximo}`);
+        this.name = "AnoNascimentoAbaixoDoMaximoError";
+    }
+}
+
+function calcularIdade1(anoNascimento: number): number {
+    if (anoNascimento < 1900) {
+        throw new AnoNascimentoAbaixoDoMinimoError("Ano Nascimento inválido! Valor deve ser acima de 1899");
+    }
+
+    let dataAtual: Date = new Date();
+    let anoAtual: number = dataAtual.getFullYear();
+
+    if (anoNascimento > anoAtual) {
+        throw new AnoNascimentoAbaixoDoMaximoError(anoAtual + 1);
+    }
+    let idade = anoAtual - anoNascimento;
+    return idade;
+}
+
+try{
+    let idade = calcularIdade1(1030);
+    console.log(`Idade:${idade}`);
+}catch(error){
+    if(error instanceof AnoNascimentoAbaixoDoMinimoError || error instanceof AnoNascimentoAbaixoDoMaximoError){
+        console.log("Erro no campo de Ano de Nascimento:");
+        console.error(error.message);
+        console.error(error.name);
+        console.error(error.stack);
+    }else{
+        console.log(error.message);
+    }
+}
